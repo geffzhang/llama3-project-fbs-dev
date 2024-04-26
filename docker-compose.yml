@@ -6,6 +6,13 @@ services:
     ports:
       - 11434:11434
     restart: always
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
 
   open-web-ui:
     image: ghcr.io/ollama-webui/ollama-webui:main
@@ -16,7 +23,13 @@ services:
     environment:
       - OLLAMA_BASE_URL=http://127.0.0.1:11434
     restart: always
-
+  
+  lobe-chat:
+    image: lobehub/lobe-chat
+    ports:
+      - "3210:3210"
+    environment:
+      - OLLAMA_PROXY_URL=http://127.0.0.1:11434/v1
 volumes:
   ollama:
   open-webui:
